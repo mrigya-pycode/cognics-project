@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+  body {
+    background-color: coral;
+  }
+  </style>
+    <meta charset="UTF-8">
+    <title>labwork</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<script>
+    function running()
+    {
+    window.location.reload(true);
+    }
+</script>
+
+<h1 style="text-align:center">Lab Work File </h1><br/><br/>
+<a style="text-align:center" href="/" >Home</a>
+<br/><br/><br/><br/>
+<form method="post">
+  {% csrf_token %}
+  <h3>select your suitable state:</h3>
+<select id="states" name="state_select" class="browser-default custom-select">
+  <option selected>Select State</option>
+  {% for i in states %}
+  <option value="{{i.id}}">{{i.name}}</option>
+  {% endfor %}
+</select>
+<br><br><br><br>
+<h3>select your suitable cities:</h3>
+<select id="city_select" name="city_select" class="browser-default custom-select">
+  <option selected>Select State</option>
+
+</select>
+<button type="submit" >submit</button>
+</form>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#states").change(function(){
+      var selectedstate = $(this).children("option:selected"). val();
+      console.log(selectedstate);
+      $.ajax({
+        beforeSend: function(){
+          $('.city_opt').remove();
+        },
+        url:'/validatestate/',
+        data:{'state':selectedstate},
+        type:'get',
+        dataType:'json',
+        success:function(response){
+          if(response.city){
+            var city = response.city;
+            for (i=0;i<city.length;i++){
+              var opt = "<option class='city_opt' value="+city[i]+">"+city[i]+"</option>";
+              $('#city_select').append(opt);
+            }
+          }
+        }
+      })//ajax end
+    });
+  });
+</script>
+
+</body>
+</html>
